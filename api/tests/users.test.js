@@ -108,5 +108,42 @@ describe("Users Endpoint", () => {
         expect(res.status).to.equal(200);
         expect(res.body).to.have.property("users");
         expect(res.body.users).to.be.an('array');
+        expect(res.body.users[0].hair).to.have.property("color", "Brown");
+    });
+
+    it(`@users ${testCases.positive.getUserCartsById}`, async () => {
+        const res = await getUserCartsById(6);
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property("carts");
+        expect(res.body.carts).to.be.an('array');
+        const cart = res.body.carts[0];
+        expect(cart).to.have.property("id").that.is.a('number');
+        expect(cart).to.have.property("total").that.is.a('number');
+        expect(cart).to.have.property("discountedTotal").that.is.a('number');
+        expect(cart).to.have.property("totalProducts").that.is.a('number');
+        expect(cart).to.have.property("totalQuantity").that.is.a('number');
+    });
+
+    it(`@users ${testCases.positive.getUserPostsById}`, async () => {
+        const res = await getUserPostsById(6);
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property("posts");
+        expect(res.body.posts).to.be.an('array');
+        const post = res.body.posts[0];
+        expect(post).to.have.property("id").that.is.a('number');
+        expect(post).to.have.property("title").that.is.a('string');
+        expect(post).to.have.property("body").that.is.a('string');
+        expect(post).to.have.property("views").that.is.a('number');
+    });
+
+    it(`@users ${testCases.positive.getUserTodosById}`, async () => {
+        const res = await getUserTodosById(6);
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property("todos");
+        expect(res.body.todos).to.be.an('array');
+        const todo = res.body.todos[0];
+        expect(todo).to.have.property("id").that.is.a('number');
+        expect(todo).to.have.property("todo").that.is.a('string');
+        expect(todo).to.have.property("completed").that.is.a('boolean');
     });
 });
