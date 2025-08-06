@@ -1,17 +1,16 @@
-import { assert } from "chai";
+import { assert, expect } from "chai";
 import { faker } from "@faker-js/faker";
 import { validAuthData, invalidAuthData } from "../data/auth-data.js";
-
 import getAccessToken from "../endpoints/auth-endpoint.js";
 
 const testCase = {
     positive : {
         validData : "As a User, I should be able to login with valid data",
-        getAccessToken : "As a System, I should to be able to get access token"
     },
     negative : {
-        invalidCredentials : "As a User, I should got an error message when I login with invalid credential",
-        invalidEmail : "As a User, I should got an error message when I login with invalid email",
+        unregisteredUsername : "As a User, I should got an error message when I login with unregistered username",
+        emptyUsername : "As a User, I should got an error message when I login with empty username",
+        emptyPassword : "As a User, I should got an error message when I login with empty password",
     },
 }
 
@@ -19,13 +18,36 @@ let accessToken;
 
 describe("Authentication Endpoint", () => {
     it(`@auth ${testCase.positive.validData}`, async () => {
-        const response = await getAccessToken(validAuthData);
-        assert.equal(response.status, 200);
-
+        const res = await getAccessToken(validAuthData);
+        expect(res.status).to.equal(200);
+        expect(res.body).to.have.property("accessToken");
+        expect(res.body).to.have.property("refreshToken");
+        expect(res.body.accessToken.split(".").length).to.equal(3);
+        accessToken = res.body.accessToken;
     });
 
-    it(`@auth ${testCase.negative.invalidCredentials}`, async () => {
-        const response = await getAccessToken(invalidAuthData);
-        assert.equal(response.status, 400);
+    it(`@auth ${testCase.negative.unregisteredUsername}`, async () => {
+        const res = await getAccessToken(invalidAuthData);
+        expect(res.status).to.equal(400);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal("Invalid credentials");
+    });
+
+    it(`@auth ${testCase.negative.emptyUsername}`, async () => {
+        const res = await getAccessToken({ password: validAuthData.password });
+        expect(res.status).to.equal(400);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal("Username and password required");
+    });
+
+    it(`@auth ${testCase.negative.emptyPassword}`, async () => {
+        const res = await getAccessToken({ username: validAuthData.username });
+        expect(res.status).to.equal(400);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal("Username and password required");
     });
 });
+
+export default { 
+    accessToken 
+}
