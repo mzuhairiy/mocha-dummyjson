@@ -1,7 +1,7 @@
 import { assert, expect } from "chai";
 import { faker } from "@faker-js/faker";
 import { validAuthData, invalidAuthData } from "../data/auth-data.js";
-import { getAccessToken } from "../endpoints/auth-endpoint.js";
+import getAccessToken from "../endpoints/auth-endpoint.js";
 
 const testCases = {
     positive : {
