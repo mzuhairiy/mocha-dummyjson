@@ -1,0 +1,16 @@
+{
+  "timeout": 10000,
+  "recursive": true,
+  "spec": [
+    "api/tests/**/*.test.js"
+  ],
+  "reporter": "spec",
+  "reporterOptions": {},
+  "exit": true,
+  "bail": false,
+  "slow": 2000,
+  "ui": "bdd",
+  "require": [
+    "dotenv/config"
+  ]
+}
