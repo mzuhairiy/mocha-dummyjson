@@ -5,35 +5,32 @@ const request = supertest(BASE_URL);
 
 export const getAllUsers = () => request.get('/users')
     .set('Content-Type', 'application/json')
-    //.set('Authorization', `Bearer ${token}`)
 
-export const getUserById = (id, token) => request.get(`/users/${id}`)
+export const getUserById = (id) => request.get(`/users/${id}`)
     .set('Content-Type', 'application/json')
-    .set('Authorization', `Bearer ${token}`);
 
 export const getCurrentUser = (token) => request.get('/users/me')
     .set('Content-Type', 'application/json')
     .set('Authorization', `Bearer ${token}`);
 
-export const addUser = (token, data) => request.post('/users/add')
+export const addUser = (data) => request.post('/users/add')
     .set('Content-Type', 'application/json')
-    .set('Authorization', `Bearer ${token}`)
     .send(data);
 
-export const updateUser = (id, token, data) => request.put(`/users/${id}`)
+export const updateUser = (id, data) => request.put(`/users/${id}`)
     .set('Content-Type', 'application/json')
-    .set('Authorization', `Bearer ${token}`)
     .send(data);
 
-export const deleteUser = (id, token) => request.delete(`/users/${id}`)
+export const deleteUser = (id) => request.delete(`/users/${id}`)
     .set('Content-Type', 'application/json')
-    .set('Authorization', `Bearer ${token}`);
 
-export const filterUser = (token, query) => request.get('/users/filter')
-    .set('Content-Type', 'application/json')
-    .set('Authorization', `Bearer ${token}`)
-    .query(query);
-
+export const filterUser = (query) => {
+    const params = new URLSearchParams(query).toString();
+    return request
+        .get(`/users/filter?${params}`)
+        .set('Content-Type', 'application/json')
+    };
+    
 export const getUserCartsById = (id, token) => request.get(`/users/${id}/carts`)
     .set('Content-Type', 'application/json')
     .set('Authorization', `Bearer ${token}`);
