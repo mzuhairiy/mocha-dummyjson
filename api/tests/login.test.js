@@ -1,9 +1,9 @@
 import { assert, expect } from "chai";
 import { faker } from "@faker-js/faker";
 import { validAuthData, invalidAuthData } from "../data/auth-data.js";
-import getAccessToken from "../endpoints/auth-endpoint.js";
+import { getAccessToken } from "../endpoints/auth-endpoint.js";
 
-const testCase = {
+const testCases = {
     positive : {
         validData : "As a User, I should be able to login with valid data",
     },
@@ -17,7 +17,7 @@ const testCase = {
 let accessToken;
 
 describe("Authentication Endpoint", () => {
-    it(`@auth ${testCase.positive.validData}`, async () => {
+    it(`@auth ${testCases.positive.validData}`, async () => {
         const res = await getAccessToken(validAuthData);
         expect(res.status).to.equal(200);
         expect(res.body).to.have.property("accessToken");
@@ -26,21 +26,21 @@ describe("Authentication Endpoint", () => {
         accessToken = res.body.accessToken;
     });
 
-    it(`@auth ${testCase.negative.unregisteredUsername}`, async () => {
+    it(`@auth ${testCases.negative.unregisteredUsername}`, async () => {
         const res = await getAccessToken(invalidAuthData);
         expect(res.status).to.equal(400);
         expect(res.body).to.have.property("message");
         expect(res.body.message).to.equal("Invalid credentials");
     });
 
-    it(`@auth ${testCase.negative.emptyUsername}`, async () => {
+    it(`@auth ${testCases.negative.emptyUsername}`, async () => {
         const res = await getAccessToken({ password: validAuthData.password });
         expect(res.status).to.equal(400);
         expect(res.body).to.have.property("message");
         expect(res.body.message).to.equal("Username and password required");
     });
 
-    it(`@auth ${testCase.negative.emptyPassword}`, async () => {
+    it(`@auth ${testCases.negative.emptyPassword}`, async () => {
         const res = await getAccessToken({ username: validAuthData.username });
         expect(res.status).to.equal(400);
         expect(res.body).to.have.property("message");
