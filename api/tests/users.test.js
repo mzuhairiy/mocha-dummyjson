@@ -2,7 +2,6 @@ import { assert, expect } from "chai";
 import getAccessToken from "../endpoints/auth-endpoint.js";
 import { getAllUsers, getUserById, getCurrentUser, addUser, updateUser, deleteUser, filterUser, getUserCartsById, getUserPostsById, getUserTodosById  } from "../endpoints/users-endpoint.js";
 import { validAuthData } from "../data/auth-data.js";
-import { faker } from "@faker-js/faker";
 import InvalidTokenHelper from "../../helpers/invalid-token-helper.js";
 
 const testCases = {
@@ -157,11 +156,11 @@ describe("Users Endpoint", () => {
     });
 
     it(`@users ${testCases.negative.getCurrentUserWithInvalidToken}`, async () => {
-        const invalidToken = InvalidTokenHelper.invalidSignatureJWT();
+        const invalidToken = InvalidTokenHelper.randomString();
         const res = await getCurrentUser(invalidToken);
-        expect(res.status).to.equal(500);
+        expect(res.status).to.equal(401);
         expect(res.body).to.have.property("message");
-        expect(res.body.message).to.equal("invalid token");
+        expect(res.body.message).to.equal("Invalid/Expired Token!");
     });
 
     it(`@users ${testCases.negative.getCurrentUserWithExpiredToken}`, async () => {
