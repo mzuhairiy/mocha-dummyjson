@@ -61,19 +61,17 @@ describe('Products Endpoint', () => {
     it(`@products ${testCases.positive.getProductsByCategory}`, async () => {
         const category = "electronics";
         const res = await getProductsByCategory(category);
-        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res.body).to.have.property("products");
         expect(res.body.products).to.be.an('array');
     });
 
-    it.only(`@products ${testCases.positive.searchProduct}`, async () => {
+    it(`@products ${testCases.positive.searchProduct}`, async () => {
         const query = { 
             q: "phone",
             limit: 10,
         };
         const res = await searchProduct(query);
-        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res.body).to.have.property("products").that.is.an('array');
         res.body.products.forEach(product => {
