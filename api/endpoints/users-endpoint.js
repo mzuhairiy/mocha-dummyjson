@@ -31,14 +31,11 @@ export const filterUser = (query) => {
         .set('Content-Type', 'application/json')
     };
     
-export const getUserCartsById = (id, token) => request.get(`/users/${id}/carts`)
+export const getUserCartsById = (id) => request.get(`/users/${id}/carts`)
     .set('Content-Type', 'application/json')
-    .set('Authorization', `Bearer ${token}`);
 
-export const getUserPostsById = (id, token) => request.get(`/users/${id}/posts`)
+export const getUserPostsById = (id) => request.get(`/users/${id}/posts`)
     .set('Content-Type', 'application/json')
-    .set('Authorization', `Bearer ${token}`);
 
-export const getUserTodosById = (id, token) => request.get(`/users/${id}/todos`)
+export const getUserTodosById = (id) => request.get(`/users/${id}/todos`)
     .set('Content-Type', 'application/json')
-    .set('Authorization', `Bearer ${token}`);

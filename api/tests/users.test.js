@@ -2,7 +2,8 @@ import { assert, expect } from "chai";
 import getAccessToken from "../endpoints/auth-endpoint.js";
 import { getAllUsers, getUserById, getCurrentUser, addUser, updateUser, deleteUser, filterUser, getUserCartsById, getUserPostsById, getUserTodosById  } from "../endpoints/users-endpoint.js";
 import { validAuthData } from "../data/auth-data.js";
-import { sk } from "@faker-js/faker";
+import { faker } from "@faker-js/faker";
+import InvalidTokenHelper from "../../helpers/invalid-token-helper.js";
 
 const testCases = {
     positive : {
@@ -145,5 +146,73 @@ describe("Users Endpoint", () => {
         expect(todo).to.have.property("id").that.is.a('number');
         expect(todo).to.have.property("todo").that.is.a('string');
         expect(todo).to.have.property("completed").that.is.a('boolean');
+    });
+
+    it(`@users ${testCases.negative.getUserByUnknownId}`, async () => {
+        const userId = 9999;
+        const res = await getUserById(userId);
+        expect(res.status).to.equal(404);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal(`User with id '${userId}' not found`);
+    });
+
+    it(`@users ${testCases.negative.getCurrentUserWithInvalidToken}`, async () => {
+        const invalidToken = InvalidTokenHelper.invalidSignatureJWT();
+        const res = await getCurrentUser(invalidToken);
+        expect(res.status).to.equal(500);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal("invalid token");
+    });
+
+    it(`@users ${testCases.negative.getCurrentUserWithExpiredToken}`, async () => {
+        const expiredToken = InvalidTokenHelper.randomString();
+        const res = await getCurrentUser(expiredToken);
+        expect(res.status).to.equal(401);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal("Invalid/Expired Token!");
+    });
+
+    it(`@users ${testCases.negative.updateUserWithInvalidId}`, async () => {
+        const invalidId = (9999);
+        const updatedData = {
+            firstName: "UpdatedName",
+            lastName: "UpdatedLastName"
+        };
+        const res = await updateUser(invalidId, updatedData);
+        expect(res.status).to.equal(404);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal(`User with id '${invalidId}' not found`);
+    });
+
+    it(`@users ${testCases.negative.deleteUserWithInvalidId}`, async () => {
+        const invalidId = (9999);
+        const res = await deleteUser(invalidId);
+        expect(res.status).to.equal(404);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal(`User with id '${invalidId}' not found`);
+    });
+
+    it(`@users ${testCases.negative.getUserCartsByUnknownId}`, async () => {
+        const unknownId = 9999;
+        const res = await getUserCartsById(unknownId);
+        expect(res.status).to.equal(404);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal(`User with id '${unknownId}' not found`);
+    });
+
+    it(`@users ${testCases.negative.getUserPostsByUnknownId}`, async () => {
+        const unknownId = 9999;
+        const res = await getUserPostsById(unknownId);
+        expect(res.status).to.equal(404);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal(`User with id '${unknownId}' not found`);
+    });
+
+    it(`@users ${testCases.negative.getUserTodosByUnknownId}`, async () => {
+        const unknownId = 9999;
+        const res = await getUserTodosById(unknownId);
+        expect(res.status).to.equal(404);
+        expect(res.body).to.have.property("message");
+        expect(res.body.message).to.equal(`User with id '${unknownId}' not found`);
     });
 });
